@@ -2,22 +2,127 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>N64 Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Game Emulator</title>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    button {
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+
+    #emul {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="emul"></div>
+  <h1>My Game Library</h1>
 
-<script>
-var NepPlayer = "#emul";
-var NepEmu = "n64";
-var NepLang = "en";
-var gameUrl = "./Super%20Mario%2064%20(USA).z64";
+  <select id="system">
+    <option value="nes">NES</option>
+    <option value="snes">SNES</option>
+    <option value="gba">Game Boy Advance</option>
+    <option value="n64">Nintendo 64</option>
+    <option value="md">Sega Mega Drive</option>
+  </select>
 
-var NjsScript = document.createElement("script");
-NjsScript.src = "https://mem.neptunjs.com/njs/njsLoader.js";
-document.body.appendChild(NjsScript);
-</script>
+  <select id="game">
+  </select>
+
+  <button onclick="startGame()">Play</button>
+
+  <div id="emul"></div>
+
+  <script>
+    const games = {
+      nes: [
+        { name: "My NES Game", file: "roms/nes/game.nes" }
+      ],
+
+      snes: [
+        { name: "My SNES Game", file: "roms/snes/game.sfc" }
+      ],
+
+      gba: [
+        { name: "My GBA Game", file: "roms/gba/game.gba" }
+      ],
+
+      n64: [
+        { name: "My N64 Game", file: "roms/n64/game.z64" }
+      ],
+
+      md: [
+        { name: "My Mega Drive Game", file: "roms/md/game.md" }
+      ]
+    };
+
+    const systemSelect = document.getElementById("system");
+    const gameSelect = document.getElementById("game");
+
+    function updateGames() {
+      const system = systemSelect.value;
+
+      gameSelect.innerHTML = "";
+
+      games[system].forEach((game) => {
+        const option = document.createElement("option");
+        option.value = game.file;
+        option.textContent = game.name;
+        gameSelect.appendChild(option);
+      });
+    }
+
+    function startGame() {
+      const system = systemSelect.value;
+      const gameUrl = gameSelect.value;
+
+      document.getElementById("emul").innerHTML = "";
+
+      window.NepPlayer = "#emul";
+      window.NepEmu = system;
+      window.NepLang = "en";
+      window.gameUrl = gameUrl;
+
+      const oldScript = document.getElementById("neptun-loader");
+
+      if (oldScript) {
+        oldScript.remove();
+      }
+
+      const script = document.createElement("script");
+      script.id = "neptun-loader";
+      script.src = "https://mem.neptunjs.com/njs/njsLoader.js";
+
+      document.body.appendChild(script);
+    }
+
+    systemSelect.addEventListener("change", updateGames);
+
+    updateGames();
+  </script>
 
 </body>
 </html>
