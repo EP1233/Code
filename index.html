@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Game Emulator</title>
+  <title>My Game Library</title>
 
   <style>
     body {
@@ -13,6 +13,10 @@
       text-align: center;
       margin: 0;
       padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
     }
 
     select, button {
@@ -29,10 +33,15 @@
       cursor: pointer;
     }
 
+    button:hover {
+      background: #2980b9;
+    }
+
     #emul {
       width: 100%;
       max-width: 1000px;
       margin: 20px auto;
+      min-height: 400px;
     }
   </style>
 </head>
@@ -41,61 +50,151 @@
 
   <h1>My Game Library</h1>
 
+  <!-- Emulator/System selector -->
   <select id="system">
+
     <option value="nes">NES</option>
-    <option value="snes">SNES</option>
+    <option value="fds">Famicom Disk System</option>
+    <option value="snes">Super NES</option>
+
+    <option value="gb">Game Boy</option>
+    <option value="gbc">Game Boy Color</option>
     <option value="gba">Game Boy Advance</option>
+
+    <option value="vb">Virtual Boy</option>
     <option value="n64">Nintendo 64</option>
-    <option value="md">Sega Mega Drive</option>
+    <option value="nds">Nintendo DS</option>
+
+    <option value="psx">PlayStation</option>
+
+    <option value="cps1">CPS 1</option>
+    <option value="cps2">CPS 2</option>
+    <option value="cps3">CPS 3</option>
+
   </select>
 
-  <select id="game">
-  </select>
+  <!-- Game selector -->
+  <select id="game"></select>
 
   <button onclick="startGame()">Play</button>
 
   <div id="emul"></div>
 
   <script>
+
+    /*
+     * Add your legally distributable game files here.
+     *
+     * Example:
+     *
+     * { name: "My Game", file: "roms/nes/mygame.nes" }
+     */
+
     const games = {
+
+      /* Nintendo */
+
       nes: [
-        { name: "My NES Game", file: "roms/nes/game.nes" }
+        { name: "NES Game", file: "roms/nes/game.nes" }
+      ],
+
+      fds: [
+        { name: "Famicom Disk Game", file: "roms/fds/game.fds" }
       ],
 
       snes: [
-        { name: "My SNES Game", file: "roms/snes/game.sfc" }
+        { name: "SNES Game", file: "roms/snes/game.sfc" }
+      ],
+
+      gb: [
+        { name: "Game Boy Game", file: "roms/gb/game.gb" }
+      ],
+
+      gbc: [
+        { name: "Game Boy Color Game", file: "roms/gbc/game.gbc" }
       ],
 
       gba: [
-        { name: "My GBA Game", file: "roms/gba/game.gba" }
+        { name: "Game Boy Advance Game", file: "roms/gba/game.gba" }
+      ],
+
+      vb: [
+        { name: "Virtual Boy Game", file: "roms/vb/game.vb" }
       ],
 
       n64: [
-        { name: "My N64 Game", file: "roms/n64/game.z64" }
+        { name: "Nintendo 64 Game", file: "roms/n64/game.z64" }
       ],
 
-      md: [
-        { name: "My Mega Drive Game", file: "roms/md/game.md" }
+      nds: [
+        { name: "Nintendo DS Game", file: "roms/nds/game.nds" }
+      ],
+
+      /* PlayStation */
+
+      psx: [
+        {
+          name: "PlayStation Game",
+          file: "roms/psx/game.zip"
+        }
+      ],
+
+      /* Arcade */
+
+      cps1: [
+        {
+          name: "CPS1 Game",
+          file: "roms/cps1/game.zip"
+        }
+      ],
+
+      cps2: [
+        {
+          name: "CPS2 Game",
+          file: "roms/cps2/game.zip"
+        }
+      ],
+
+      cps3: [
+        {
+          name: "CPS3 Game",
+          file: "roms/cps3/game.zip"
+        }
       ]
+
     };
+
 
     const systemSelect = document.getElementById("system");
     const gameSelect = document.getElementById("game");
 
+
+    /* Update game list when system changes */
+
     function updateGames() {
+
       const system = systemSelect.value;
 
       gameSelect.innerHTML = "";
 
-      games[system].forEach((game) => {
+      games[system].forEach(function(game) {
+
         const option = document.createElement("option");
+
         option.value = game.file;
         option.textContent = game.name;
+
         gameSelect.appendChild(option);
+
       });
+
     }
 
+
+    /* Start selected game */
+
     function startGame() {
+
       const system = systemSelect.value;
       const gameUrl = gameSelect.value;
 
@@ -106,22 +205,35 @@
       window.NepLang = "en";
       window.gameUrl = gameUrl;
 
-      const oldScript = document.getElementById("neptun-loader");
+
+      /* Remove previous NeptunJS loader */
+
+      const oldScript =
+        document.getElementById("neptun-loader");
 
       if (oldScript) {
         oldScript.remove();
       }
 
+
+      /* Load NeptunJS */
+
       const script = document.createElement("script");
+
       script.id = "neptun-loader";
-      script.src = "https://mem.neptunjs.com/njs/njsLoader.js";
+
+      script.src =
+        "https://mem.neptunjs.com/njs/njsLoader.js";
 
       document.body.appendChild(script);
+
     }
 
-    systemSelect.addEventListener("change", updateGames);
+
+    /* Load games when page starts */
 
     updateGames();
+
   </script>
 
 </body>
