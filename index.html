@@ -1,24 +1,99 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>N64 Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Game Collection</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #games {
+      padding: 15px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #333;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #555;
+    }
+
+    #emul {
+      width: 100%;
+      min-height: 600px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="emul"></div>
+  <h1>My Games</h1>
 
-<script>
-var NepPlayer = "#emul";
-var NepEmu = "n64";
-var NepLang = "en";
-var gameUrl = "./Super%20Mario%2064%20(USA).z64";
+  <div id="games">
+    <button onclick="loadGame('sm64')">
+      Super Mario 64
+    </button>
 
-var NjsScript = document.createElement("script");
-NjsScript.src = "https://mem.neptunjs.com/njs/njsLoader.js";
-document.body.appendChild(NjsScript);
-</script>
+    <button onclick="loadGame('fireemblem')">
+      Fire Emblem
+    </button>
+  </div>
+
+  <div id="emul"></div>
+
+  <script>
+    const games = {
+      sm64: {
+        emulator: "n64",
+        file: "./Super%20Mario%2064%20(USA).z64"
+      },
+
+      fireemblem: {
+        emulator: "gba",
+        file: "./Fire%20Emblem%20(U).gba"
+      }
+    };
+
+    function loadGame(gameName) {
+      const game = games[gameName];
+
+      if (!game) {
+        alert("Game not found.");
+        return;
+      }
+
+      // Remove the old emulator
+      document.getElementById("emul").innerHTML = "";
+
+      // Set emulator configuration
+      window.NepPlayer = "#emul";
+      window.NepEmu = game.emulator;
+      window.NepLang = "en";
+      window.gameUrl = game.file;
+
+      // Load the emulator
+      const script = document.createElement("script");
+      script.src = "https://mem.neptunjs.com/njs/njsLoader.js";
+      document.body.appendChild(script);
+    }
+
+    // Load Super Mario 64 by default
+    loadGame("sm64");
+  </script>
 
 </body>
 </html>
